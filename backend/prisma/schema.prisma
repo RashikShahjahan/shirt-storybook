@@ -6,9 +6,21 @@
 
 generator client {
   provider = "prisma-client-js"
+    previewFeatures = ["fullTextSearch"]
+    binaryTargets = ["native", "debian-openssl-3.0.x"]
+
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Shirt {
+    id        Int     @id @default(autoincrement())
+    size String 
+    color String
+    brand String
+    material String
+    favorite Boolean
 }
