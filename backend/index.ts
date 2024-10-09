@@ -20,18 +20,48 @@ app.post('/shirts', async(req, res) => {
               },
             },
           });
+          const resultArr = Object.keys(result).map((key) => [key]);
+          console.log(resultArr);
 
-          console.log(result);
-          const resultArr = Object.keys(result).map((key) => [key, result[key]]);
           res.send(resultArr);
     }
     else{
         const result = await prisma.shirt.findMany();
-        const resultArr = Object.keys(result).map((key) => [key, result[key]]);
+        const resultArr = Object.keys(result).map((key) => [key]);
         console.log(resultArr);
 
         res.send(resultArr);
     }
+});
+
+app.get('/shirts/:id',async function (req, res) {
+  const id = Number(req.params['id']);
+  console.log(id);
+
+  const result = await prisma.shirt.findUnique(
+   { 
+    where:{
+      id:id
+    }}
+  );
+  console.log(result);
+
+  res.send(result);
+});
+
+app.post('/shirts/favorite',async function (req, res) {
+ console.log(req.body);
+ await prisma.shirt.update(
+    {
+      where:{
+      id:req.body.id
+    },
+    data: {
+      favorite: req.body.favorite,
+      },
+    }
+  );
+  res.send(200);
 });
 
 app.listen(port, () => {
