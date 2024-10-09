@@ -1,8 +1,9 @@
 export type ShirtProps = {
-    id:string,
+    id:number,
     size:string,
     color:string,
     brand:string,
     material:string,
-    favorite:boolean
+    favorite:boolean,
+    tags:string[]
 };

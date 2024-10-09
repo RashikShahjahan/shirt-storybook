@@ -1,30 +1,12 @@
-// Fetch shirts based on search bar filters
-// Render ther list of shirts
 import {FormEvent, useEffect, useState } from "react";
-import Shirt from "./shirt";
 import axios from "axios";
-import { ShirtProps } from "./shirtprops";
+import { Link, Outlet } from "react-router-dom";
 
 
 function ShirtList(){
-    const [shirts,setShirts] = useState<ShirtProps[]>([]);
+    const [shirts,setShirts] = useState<number[]>([]);
     const [query,setQuery] = useState("");
     const url = "http://localhost:3000/shirts";
-
-
-    const convertToShirtProps = (data: any[]): ShirtProps[] => {
-        return data.map(item => {
-            const shirt = item[1];
-            return {
-                id: String(shirt.id),
-                size: shirt.size,
-                color: shirt.color,
-                brand: shirt.brand,
-                material: shirt.material,
-                favorite: shirt.favorite
-            };
-        });
-    };
     const search = async(e:FormEvent<HTMLFormElement>)=>{
         e.preventDefault();
         const payload = {
@@ -32,14 +14,14 @@ function ShirtList(){
                 searchQuery:query
             }
         };
-    const response = await axios.post(url, payload,  {
+        const response = await axios.post(url, payload,  {
                         headers: {
                             'Content-Type': 'application/json'
                             }
                         }
                     );  
-    const data = convertToShirtProps(response.data);
-    setShirts(data);
+        const data = response.data;
+        setShirts(data);
     };
 
     const fetchPost = async() => {
@@ -49,13 +31,13 @@ function ShirtList(){
             }
         };
         const response = await axios.post(url,payload, {
-        headers: {
-            'Content-Type': 'application/json'
-                    }
+            headers: {
+                'Content-Type': 'application/json'
+                        }
                 }
             );       
-            const data = convertToShirtProps(response.data);
-            setShirts(data);  
+        const data = response.data;
+        setShirts(data);  
     };
 
     useEffect(()=> {
@@ -70,16 +52,17 @@ function ShirtList(){
                 <button type="submit"> Search</button>
             </form>
             {
-                shirts.map(((shirt)=>{
-                    console.log("outside shirt",shirts);
-
+                shirts.map(((shirtId)=>{
                     return (
-                        <Shirt id={shirt.id} size={shirt.size} color={shirt.color}  brand={shirt.brand}  material={shirt.material}  favorite={shirt.favorite}/>                            
-                    )
+                        <Link to={"/shirts/"+shirtId} key={shirtId}>
+                            {shirtId}
+                        </Link>
+                        )
                         }
                     )
                 )
             }
+            <Outlet />
         </div>
     );
 }
